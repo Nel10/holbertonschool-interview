@@ -18,8 +18,50 @@ struct binary_tree_s
 	struct binary_tree_s *left;
 	struct binary_tree_s *right;
 };
+
 typedef struct binary_tree_s heap_t;
 typedef struct binary_tree_s binary_tree_t;
+
+/**
+ * SWAP_TREE_NODE - macro that can be used to swap a node if binary tree
+ *
+ * @PARENT: parent of node that is being swapped
+ * @NODE: node that is being swapped
+ * @HEAD: node that use to reference the root node of binary tree
+ *
+ */
+#define SWAP_TREE_NODE(PARENT, NODE, HEAD)                       \
+	do {                                                         \
+		heap_t _tmp_parent = {0, NULL, NULL, NULL};              \
+		_tmp_parent.left = (PARENT)->left;                       \
+		_tmp_parent.right = (PARENT)->right;                     \
+		_tmp_parent.parent = (PARENT)->parent;                   \
+		if ((PARENT)->left == (NODE))                            \
+			_tmp_parent.left = (PARENT);                         \
+		else if ((PARENT)->right == (NODE))                      \
+			_tmp_parent.right = (PARENT);                        \
+		(PARENT)->left = (NODE)->left;                           \
+		(PARENT)->right = (NODE)->right;                         \
+		(PARENT)->parent = (NODE);                               \
+		if ((PARENT)->right)                                     \
+			(PARENT)->right->parent = (PARENT);                  \
+		if ((PARENT)->left)                                      \
+			(PARENT)->left->parent = (PARENT);                   \
+		(NODE)->left = _tmp_parent.left;                         \
+		(NODE)->right = _tmp_parent.right;                       \
+		(NODE)->parent = _tmp_parent.parent;                     \
+		if ((NODE)->right)                                       \
+			(NODE)->right->parent = (NODE);                      \
+		if ((NODE)->left)                                        \
+			(NODE)->left->parent = (NODE);                       \
+		if ((NODE)->parent && (NODE)->parent->left == (PARENT))  \
+			(NODE)->parent->left = (NODE);                       \
+		if ((NODE)->parent && (NODE)->parent->right == (PARENT)) \
+			(NODE)->parent->right = (NODE);                      \
+		if (!(NODE)->parent)                                     \
+			(HEAD) = (NODE);                                     \
+	} while (0)
+
 binary_tree_t *binary_tree_node(binary_tree_t *parent, int value);
 void binary_tree_print(const binary_tree_t *tree);
 
